@@ -10,8 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.acme.quickstart.responses.base.Response;
-import org.acme.quickstart.responses.base.Result;
+import org.acme.quickstart.responses.BaseResponse;
+import org.acme.quickstart.responses.BaseResult;
 
 @Path("/hello")
 public class GreetingResource {
@@ -36,11 +36,26 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/json")
-    public CompletionStage<Response> demand() {
+    public BaseResponse jsonSync() {
+        BaseResponse r = new BaseResponse(BaseResult.OK, "Everything is fine");
+        return r;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/json/async")
+    public CompletionStage<BaseResponse> demand() {
         return CompletableFuture.supplyAsync(() -> {
-            Response r = new Response(Result.OK, "Everything is fine");
+            BaseResponse r = new BaseResponse(BaseResult.OK, "Everything is fine");
             return r;
         });
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/text/async")
+    public String text() {
+        return "example";
     }
 
 }
